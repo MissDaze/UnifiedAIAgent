@@ -5,11 +5,11 @@ import { Network } from "lucide-react";
 
 export function NavHeader() {
   const handleLogin = () => {
-    window.location.href = "/api/login";
+    window.location.href = "/login";
   };
 
   const handleSignup = () => {
-    window.location.href = "/api/login";
+    window.location.href = "/login";
   };
 
   return (

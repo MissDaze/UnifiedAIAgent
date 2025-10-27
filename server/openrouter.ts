@@ -238,7 +238,7 @@ export async function createChatCompletion(
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": process.env.REPLIT_DOMAINS?.split(",")[0] || "https://replit.com",
+        "HTTP-Referer": process.env.RAILWAY_PUBLIC_DOMAIN || process.env.PUBLIC_URL || "https://unified-ai-agent.railway.app",
         "X-Title": "AI Nexus",
       },
       body: JSON.stringify(requestBody),
