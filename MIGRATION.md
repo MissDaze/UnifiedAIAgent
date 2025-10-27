@@ -86,5 +86,6 @@ If you have an existing deployment on Replit and want to migrate to Railway:
 
 - The new authentication system is intentionally simple for ease of deployment
 - For production use, consider implementing more robust authentication (bcrypt password hashing, email verification, etc.)
+- **Security Note**: The application does not currently implement CSRF protection. For production deployments, consider adding CSRF middleware such as `csurf` or similar packages.
 - All core features (bots, teams, chat, outputs) remain unchanged
 - Database schema remains the same - no migrations needed

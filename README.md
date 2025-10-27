@@ -87,6 +87,16 @@ The app will be available at `http://localhost:5000`
 - **AI**: OpenRouter API
 - **Authentication**: Simple session-based auth
 
+## Security Notes
+
+This application uses a simple session-based authentication system for ease of deployment. For production use, consider:
+
+1. **CSRF Protection**: Add CSRF middleware (e.g., `csurf` package)
+2. **Password Hashing**: Implement bcrypt or argon2 for password storage
+3. **Rate Limiting**: Add rate limiting to prevent brute force attacks
+4. **Input Validation**: The application uses Zod for validation, but review all user inputs
+5. **HTTPS**: Always use HTTPS in production (Railway provides this by default)
+
 ## License
 
 MIT
