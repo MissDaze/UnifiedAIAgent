@@ -3,26 +3,41 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Network } from "lucide-react";
-import { SiGoogle, SiGithub } from "react-icons/si";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [, setLocation] = useLocation();
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login submitted:", { email, password });
-  };
+    setIsLoading(true);
+    setError("");
 
-  const handleGoogleLogin = () => {
-    console.log("Google login clicked");
-  };
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-  const handleGithubLogin = () => {
-    console.log("GitHub login clicked");
+      if (response.ok) {
+        // Redirect to dashboard or home
+        setLocation("/");
+      } else {
+        setError("Login failed. Please try again.");
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -34,40 +49,18 @@ export function LoginForm() {
               <Network className="h-7 w-7 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-3xl">Welcome back</CardTitle>
-          <CardDescription>Sign in to your AI Nexus account</CardDescription>
+          <CardTitle className="text-3xl">Welcome to AI Nexus</CardTitle>
+          <CardDescription>Enter your email to sign in</CardDescription>
         </CardHeader>
         
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <Button
-              variant="outline"
-              onClick={handleGoogleLogin}
-              data-testid="button-google-login"
-            >
-              <SiGoogle className="mr-2 h-4 w-4" />
-              Google
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleGithubLogin}
-              data-testid="button-github-login"
-            >
-              <SiGithub className="mr-2 h-4 w-4" />
-              GitHub
-            </Button>
-          </div>
-          
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
-            </div>
-          </div>
-          
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded">
+                {error}
+              </div>
+            )}
+            
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -94,19 +87,18 @@ export function LoginForm() {
               />
             </div>
             
-            <Button type="submit" className="w-full" data-testid="button-submit">
-              Sign In
+            <Button 
+              type="submit" 
+              className="w-full" 
+              data-testid="button-submit"
+              disabled={isLoading}
+            >
+              {isLoading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
         </CardContent>
         
         <CardFooter className="flex flex-col space-y-2">
-          <div className="text-sm text-center text-muted-foreground">
-            Don't have an account?{" "}
-            <Link href="/signup" className="text-primary hover:underline" data-testid="link-signup">
-              Sign up
-            </Link>
-          </div>
           <div className="text-sm text-center">
             <Link href="/" className="text-muted-foreground hover:text-foreground" data-testid="link-home">
               ← Back to home
