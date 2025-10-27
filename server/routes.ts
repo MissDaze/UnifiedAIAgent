@@ -1,7 +1,7 @@
 import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated } from "./auth";
 import { 
   insertBotSchema, 
   updateBotSchema,
@@ -15,25 +15,6 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import { getFreeModels, executeTeamTasks, executeCollaborativeTeamTasks, isValidModel, createChatCompletion, type ChatMessage } from "./openrouter";
-
-// Extend Express Request type to include user
-declare global {
-  namespace Express {
-    interface User {
-      claims: {
-        sub: string;
-        email?: string;
-        first_name?: string;
-        last_name?: string;
-        profile_image_url?: string;
-        exp?: number;
-      };
-      access_token?: string;
-      refresh_token?: string;
-      expires_at?: number;
-    }
-  }
-}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
