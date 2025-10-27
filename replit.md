@@ -69,7 +69,7 @@ The application uses a Linear-inspired design approach optimized for information
 - **Runtime**: Node.js with TypeScript (ESM modules)
 - **Framework**: Express.js
 - **ORM**: Drizzle ORM with Neon serverless PostgreSQL
-- **Authentication**: Replit Auth with OpenID Connect
+- **Authentication**: Session-based authentication with PostgreSQL storage
 - **Session Management**: express-session with PostgreSQL storage
 
 **API Structure**:
@@ -94,10 +94,10 @@ RESTful API endpoints under `/api` namespace:
 - `/api/teams/:id/chat` - Multi-bot team conversations
 
 **Authentication Flow**:
-1. Replit OpenID Connect integration for SSO
-2. Session-based authentication with PostgreSQL-backed sessions
+1. Session-based authentication for user management
+2. PostgreSQL-backed session storage for persistence
 3. Protected route middleware (`isAuthenticated`) for API security
-4. User profile stored in database with Replit claims
+4. User profile stored in database
 
 **Development vs Production**:
 - Development: Vite dev server with middleware mode, HMR enabled
@@ -109,7 +109,7 @@ RESTful API endpoints under `/api` namespace:
 
 **Schema Design** (shared/schema.ts):
 
-1. **users** - User accounts (from Replit Auth)
+1. **users** - User accounts
    - Primary: User profile, email, names, profile image
    - Purpose: Authentication and ownership tracking
 
@@ -181,17 +181,6 @@ RESTful API endpoints under `/api` namespace:
   - Errors are handled gracefully - a failed bot doesn't halt the entire sequence
   - Error outputs are passed forward so subsequent bots are aware of failures
 
-**Replit Platform Services**:
-- **Replit Auth**: OpenID Connect authentication provider
-  - Discovery URL: `process.env.ISSUER_URL` (default: https://replit.com/oidc)
-  - Client credentials: `process.env.REPL_ID`
-- **Replit Domains**: Allowed hosts configuration via `process.env.REPLIT_DOMAINS`
-
-**Development Tools**:
-- **@replit/vite-plugin-runtime-error-modal**: Enhanced error overlay
-- **@replit/vite-plugin-cartographer**: Development navigation
-- **@replit/vite-plugin-dev-banner**: Dev environment indicator
-
 **Database Connection**:
 - **Neon Serverless PostgreSQL**: Via `process.env.DATABASE_URL`
 - WebSocket support for serverless environments using `ws` package
@@ -199,10 +188,11 @@ RESTful API endpoints under `/api` namespace:
 **Required Environment Variables**:
 ```
 DATABASE_URL          # Neon PostgreSQL connection string
-REPL_ID              # Replit application identifier
-REPLIT_DOMAINS       # Allowed domain list
-SESSION_SECRET       # Session encryption key
-ISSUER_URL           # (Optional) OIDC issuer override
+SESSION_SECRET        # Session encryption key
+OPENROUTER_API_KEY    # OpenRouter API key for AI models
+APP_URL               # (Optional) Application URL for API headers
+PORT                  # (Optional) Server port, defaults to 5000
+NODE_ENV              # (Optional) Environment: development or production
 ```
 
 **Third-Party UI Libraries**:
